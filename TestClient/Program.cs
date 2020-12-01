@@ -28,6 +28,7 @@ namespace TestClient
             MangoClient client = new MangoClient(vpbx_api_key, vpbx_api_salt);
             //Test get balance
             var balance = await client.GetBalance();
+            var users = await client.GetAllUsers();
             Console.WriteLine("Hello World!");
         }
     }

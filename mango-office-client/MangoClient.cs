@@ -26,10 +26,6 @@ namespace MangoOfficeClient
 		/// Ключ для создания подписи
 		/// </summary>
 		private string sign { get; set; }
-		/// <summary>
-		/// Generated token
-		/// </summary>
-		private	string api_token { get; set; }
         #endregion
 
         /// <summary>
@@ -41,7 +37,6 @@ namespace MangoOfficeClient
         {
 			this.vpbx_api_key = vpbx_api_key;
 			this.sign = sign;
-			this.api_token = Extensions.MangoSignHelper.GetSign(vpbx_api_key, string.Empty, sign);
 		}
 
 		public void Dispose()
@@ -61,9 +56,32 @@ namespace MangoOfficeClient
 			var response = await PerformCommandAsync<Balance>("account/balance");
 			return response;
 		}
-
+		public class Root
+		{
+			public List<Users.User> users { get; set; }
+		}
+		/// <summary>
+		/// Getting all users and informations
+		/// </summary>
+		/// <summary xml:lang="ru">
+		/// Получить всех пользователей и информацию 
+		/// </summary>
+		/// <returns></returns>
+		public async System.Threading.Tasks.Task<List<Users.User>> GetAllUsers()
+		{
+			var response = await PerformCommandAsync<Users.RootUser>("config/users/request");
+			return response.users;
+		}
+		/// <summary>
+		/// Execute http request on mango service
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="url"></param>
+		/// <param name="json"></param>
+		/// <returns></returns>
 		private async Task<T> PerformCommandAsync<T>(string url, string json = "{}")
         {
+			var api_token = Extensions.MangoSignHelper.GetSign(vpbx_api_key, json, sign);
 			IList<KeyValuePair<string, string>> nameValueCollection = new List<KeyValuePair<string, string>>
 			{
 				{ new KeyValuePair<string, string>("vpbx_api_key", vpbx_api_key) },
@@ -80,12 +98,5 @@ namespace MangoOfficeClient
 			else
 				throw new MangoClientException(response.StatusCode.ToString());
 		}
-
-		/*
-        private async Task<T> PerformCommandAsync(string command, string json = "{}")
-		{
-
-		}*/
-
 	}
 }
