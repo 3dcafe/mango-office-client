@@ -11,14 +11,14 @@ namespace TestClient
         /// <summary xml:lang="ru">
         /// Уникальный код вашей АТС
         /// </summary>
-        static string vpbx_api_key = "vpbx_api_key";
+        static string vpbx_api_key = "demo";
         /// <summary>
         /// Key to create signatur
         /// </summary>
         /// <summary xml:lang="ru">
         /// Ключ для создания подписи
         /// </summary>
-        static string vpbx_api_salt = "vpbx_api_salt";
+        static string vpbx_api_salt = "demo";
 
         static async System.Threading.Tasks.Task Main(string[] args)
         {
@@ -29,7 +29,11 @@ namespace TestClient
             //Test get balance
             var balance = await client.GetBalance();
             var users = await client.GetAllUsers();
+            var idCall = await client.GetStatsId(DateTime.Now.AddDays(-7), DateTime.Now, "018");
             Console.WriteLine("Hello World!");
         }
+
+
+        //https://www.mango-office.ru/upload/api/MangoOffice_VPBX_API_v1.9.pdf
     }
 }

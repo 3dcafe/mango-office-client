@@ -43,22 +43,18 @@ namespace MangoOfficeClient
         {
 #warning todo dispose 1
 		}
-
-		/// <summary>
-		/// Getting the balance of the personal account
-		/// </summary>
-		/// <summary xml:lang="ru">
-		/// Получение баланса лицевого счета.
-		/// </summary>
-		/// <returns></returns>
-		public async System.Threading.Tasks.Task<Balance> GetBalance()
+        #region Users
+        /// <summary>
+        /// Getting the balance of the personal account
+        /// </summary>
+        /// <summary xml:lang="ru">
+        /// Получение баланса лицевого счета.
+        /// </summary>
+        /// <returns></returns>
+        public async System.Threading.Tasks.Task<Balance> GetBalance()
 		{
 			var response = await PerformCommandAsync<Balance>("account/balance");
 			return response;
-		}
-		public class Root
-		{
-			public List<Users.User> users { get; set; }
 		}
 		/// <summary>
 		/// Getting all users and informations
@@ -73,14 +69,34 @@ namespace MangoOfficeClient
 			return response.users;
 		}
 		/// <summary>
+		/// Get an identifier to access call statistics
+		/// Starting statistics generation
+		/// </summary>
+		/// <summary xml:lang="ru">
+		/// Получить идентификатор для доступа к статистике звонков
+		/// Запуск формирования статистики 
+		/// </summary>
+		/// <returns>Id for stats</returns>
+		public async System.Threading.Tasks.Task<Stats.BaseKey> GetStatsId(DateTime start, DateTime finish,string extension)
+		{
+			var response = await PerformCommandAsync<Stats.BaseKey>("stats/request", new Requests.Stats.Request(start, finish, extension));
+			return response;
+		}
+		#endregion
+
+
+		/// <summary>
 		/// Execute http request on mango service
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="url"></param>
 		/// <param name="json"></param>
 		/// <returns></returns>
-		private async Task<T> PerformCommandAsync<T>(string url, string json = "{}")
+		private async Task<T> PerformCommandAsync<T>(string url, Object objSend = null)
         {
+			string json = "{}";
+			if(objSend != null)
+				json = JsonSerializer.Serialize(objSend);
 			var api_token = Extensions.MangoSignHelper.GetSign(vpbx_api_key, json, sign);
 			IList<KeyValuePair<string, string>> nameValueCollection = new List<KeyValuePair<string, string>>
 			{
@@ -88,7 +104,6 @@ namespace MangoOfficeClient
 				{ new KeyValuePair<string, string>("sign", api_token) },
 				{ new KeyValuePair<string, string>("json", json) },
 			};
-
 			var response = await new HttpClient().PostAsync("https://app.mango-office.ru/vpbx/"+url, new FormUrlEncodedContent(nameValueCollection));
 			if ((int)response.StatusCode >= 200 && (int)response.StatusCode <= 300)
 			{
