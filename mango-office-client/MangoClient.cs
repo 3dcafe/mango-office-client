@@ -82,6 +82,41 @@ namespace MangoOfficeClient
 			var response = await PerformCommandAsync<Stats.BaseKey>("stats/request", new Requests.Stats.Request(start, finish, extension));
 			return response;
 		}
+
+		public async System.Threading.Tasks.Task<List<Stats.Result>> GetStatResult(Stats.BaseKey key,int waitSecons = 0)
+		{
+			System.Threading.Thread.Sleep(waitSecons*1000);
+			List<Stats.Result> recors = new List<Stats.Result>();
+			var csv = await ExecuteCommand("stats/result", key);
+            if (!string.IsNullOrEmpty(csv))
+            {
+				var items = csv.Split('\n');
+				if (items.Length > 0)
+				{
+					foreach (var item in items)
+					{
+						if (!string.IsNullOrEmpty(item))
+						{
+							var data = item.Split(';');
+							if (data.Length == 8)
+							{
+								Stats.Result r = new Stats.Result();
+								r.records = data[0].Split(',');
+								r.start = DateTimeHelper.UnixTimeStampToDateTime(Double.Parse(data[1]));
+								r.finish = DateTimeHelper.UnixTimeStampToDateTime(Double.Parse(data[2]));
+								r.from_extension = data[3];
+								r.from_number = data[4];
+								r.to_extension = data[5];
+								r.to_number = data[6];
+								r.disconnect_reason = data[7].RemoveSpecialCharacters();
+								recors.Add(r);
+							}
+						}
+					}
+				}
+			}
+			return recors;
+		}
 		#endregion
 
 
@@ -94,8 +129,19 @@ namespace MangoOfficeClient
 		/// <returns></returns>
 		private async Task<T> PerformCommandAsync<T>(string url, Object objSend = null)
         {
+			var response_json = await ExecuteCommand(url, objSend);
+			return JsonSerializer.Deserialize<T>(response_json);
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="url"></param>
+		/// <param name="objSend"></param>
+		/// <returns></returns>
+		private async Task<string> ExecuteCommand(string url, Object objSend = null)
+		{
 			string json = "{}";
-			if(objSend != null)
+			if (objSend != null)
 				json = JsonSerializer.Serialize(objSend);
 			var api_token = Extensions.MangoSignHelper.GetSign(vpbx_api_key, json, sign);
 			IList<KeyValuePair<string, string>> nameValueCollection = new List<KeyValuePair<string, string>>
@@ -104,11 +150,11 @@ namespace MangoOfficeClient
 				{ new KeyValuePair<string, string>("sign", api_token) },
 				{ new KeyValuePair<string, string>("json", json) },
 			};
-			var response = await new HttpClient().PostAsync("https://app.mango-office.ru/vpbx/"+url, new FormUrlEncodedContent(nameValueCollection));
+			var response = await new HttpClient().PostAsync("https://app.mango-office.ru/vpbx/" + url, new FormUrlEncodedContent(nameValueCollection));
 			if ((int)response.StatusCode >= 200 && (int)response.StatusCode <= 300)
 			{
-				var response_json =  await response.Content.ReadAsStringAsync();
-				return JsonSerializer.Deserialize<T>(response_json);
+				var response_json = await response.Content.ReadAsStringAsync();
+				return response_json;
 			}
 			else
 				throw new MangoClientException(response.StatusCode.ToString());
