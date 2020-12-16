@@ -56,14 +56,25 @@ namespace MangoOfficeClient
 			var response = await PerformCommandAsync<Balance>("account/balance");
 			return response;
 		}
-		/// <summary>
-		/// Getting all users and informations
-		/// </summary>
-		/// <summary xml:lang="ru">
-		/// Получить всех пользователей и информацию 
-		/// </summary>
-		/// <returns></returns>
-		public async System.Threading.Tasks.Task<List<Users.User>> GetAllUsers()
+
+        public async System.Threading.Tasks.Task<Response.Queries.RecordingTranscripts> GetRecordingTranscripts(string idCall)
+        {
+			var obj = new Requests.Queries.RecordingTranscripts()
+			{
+				recording_id = new string[] { idCall }
+			};
+			var response = await PerformCommandAsync<Response.Queries.RecordingTranscripts>("queries/recording_transcripts", obj);
+			return response;
+		}
+
+        /// <summary>
+        /// Getting all users and informations
+        /// </summary>
+        /// <summary xml:lang="ru">
+        /// Получить всех пользователей и информацию 
+        /// </summary>
+        /// <returns></returns>
+        public async System.Threading.Tasks.Task<List<Users.User>> GetAllUsers()
 		{
 			var response = await PerformCommandAsync<Users.RootUser>("config/users/request");
 			return response.users;
