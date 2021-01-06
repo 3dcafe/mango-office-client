@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using System.IO;
 
 namespace MangoOfficeClient
 {
@@ -67,14 +68,29 @@ namespace MangoOfficeClient
 			return response;
 		}
 
-        /// <summary>
-        /// Getting all users and informations
-        /// </summary>
-        /// <summary xml:lang="ru">
-        /// Получить всех пользователей и информацию 
-        /// </summary>
-        /// <returns></returns>
-        public async System.Threading.Tasks.Task<List<Users.User>> GetAllUsers()
+		/// <summary>
+		/// Get Audio record
+		/// </summary>
+		/// <summary xml:lang="ru">
+		/// Получить запись разговора в аудио формате
+		/// </summary>
+		public async System.Threading.Tasks.Task<string> GetRecordAudio(string idCall,string folderSaveFile)
+		{
+			var obj = new Requests.Queries.Recording()
+			{
+				recording_id = idCall,
+				action = "play"
+			};
+			return await DownloadFile("queries/recording/post", obj, folderSaveFile);
+		}
+		/// <summary>
+		/// Getting all users and informations
+		/// </summary>
+		/// <summary xml:lang="ru">
+		/// Получить всех пользователей и информацию 
+		/// </summary>
+		/// <returns></returns>
+		public async System.Threading.Tasks.Task<List<Users.User>> GetAllUsers()
 		{
 			var response = await PerformCommandAsync<Users.RootUser>("config/users/request");
 			return response.users;
@@ -144,7 +160,7 @@ namespace MangoOfficeClient
 			return JsonSerializer.Deserialize<T>(response_json);
 		}
 		/// <summary>
-		/// 
+		/// Execute Command on Api Mango Office
 		/// </summary>
 		/// <param name="url"></param>
 		/// <param name="objSend"></param>
@@ -166,6 +182,42 @@ namespace MangoOfficeClient
 			{
 				var response_json = await response.Content.ReadAsStringAsync();
 				return response_json;
+			}
+			else
+				throw new MangoClientException(response.StatusCode.ToString());
+		}
+		/// <summary>
+		/// 
+		/// </summary>
+		/// <param name="url"></param>
+		/// <param name="objSend"></param>
+		/// <param name="savepath"></param>
+		/// <returns></returns>
+		private async Task<string> DownloadFile(string url, Object objSend,string savepath)
+		{
+			string json = "{}";
+			json = JsonSerializer.Serialize(objSend);
+			var api_token = Extensions.MangoSignHelper.GetSign(vpbx_api_key, json, sign);
+			IList<KeyValuePair<string, string>> nameValueCollection = new List<KeyValuePair<string, string>>
+			{
+				{ new KeyValuePair<string, string>("vpbx_api_key", vpbx_api_key) },
+				{ new KeyValuePair<string, string>("sign", api_token) },
+				{ new KeyValuePair<string, string>("json", json) },
+			};
+			var response = await new HttpClient().PostAsync("https://app.mango-office.ru/vpbx/" + url, new FormUrlEncodedContent(nameValueCollection));
+			if ((int)response.StatusCode >= 200 && (int)response.StatusCode <= 300)
+			{
+				var ex = Extensions.MimeTypeMap.GetExtension(response.Content.Headers.ContentType.ToString());
+				using (var stream = await response.Content.ReadAsStreamAsync())
+				{
+					var NewNameFile = Guid.NewGuid().ToString();
+					var fileInfo = new FileInfo(savepath + NewNameFile + ex);
+					using (var fileStream = fileInfo.OpenWrite())
+					{
+						await stream.CopyToAsync(fileStream);
+					}
+					return NewNameFile;
+				}
 			}
 			else
 				throw new MangoClientException(response.StatusCode.ToString());

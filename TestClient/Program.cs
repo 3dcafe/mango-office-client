@@ -14,14 +14,14 @@ namespace TestClient
         /// <summary xml:lang="ru">
         /// Уникальный код вашей АТС
         /// </summary>
-        static string vpbx_api_key = "";
+        static string vpbx_api_key = "*";
         /// <summary>
         /// Key to create signatur
         /// </summary>
         /// <summary xml:lang="ru">
         /// Ключ для создания подписи
         /// </summary>
-        static string vpbx_api_salt = "";
+        static string vpbx_api_salt = "*";
 
 
         static async System.Threading.Tasks.Task Main(string[] args)
@@ -38,6 +38,8 @@ namespace TestClient
             var calls = await client.GetStatResult(idCall,7);
             var lastcalls = calls.OrderByDescending(x => x.finish).ToList();
             var getDialogs = await client.GetRecordingTranscripts("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow");
+            var audioLink = await client.GetRecordAudio("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow", "C:\\ffmpeg\\");
+
 
             Console.WriteLine("Hello World!");
             Console.ReadLine();
