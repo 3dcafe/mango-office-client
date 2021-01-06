@@ -210,8 +210,8 @@ namespace MangoOfficeClient
 				var ex = Extensions.MimeTypeMap.GetExtension(response.Content.Headers.ContentType.ToString());
 				using (var stream = await response.Content.ReadAsStreamAsync())
 				{
-					var NewNameFile = Guid.NewGuid().ToString();
-					var fileInfo = new FileInfo(savepath + NewNameFile + ex);
+					var NewNameFile = Guid.NewGuid().ToString() + ex;
+					var fileInfo = new FileInfo(savepath + NewNameFile);
 					using (var fileStream = fileInfo.OpenWrite())
 					{
 						await stream.CopyToAsync(fileStream);
