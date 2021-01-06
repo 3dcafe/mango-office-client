@@ -34,11 +34,11 @@ namespace TestClient
             var balance = await client.GetBalance();
             var users = await client.GetAllUsers();
             var idCall = await client.GetStatsId(DateTime.Now.AddDays(-1), DateTime.Now.AddDays(1), "41");
-            var user = users.Where(x => x.general.name == "Щеголихина Марина Валерьевна").ToList();
+            var user = users.Where(x => x.general.name == "*").ToList();
             var calls = await client.GetStatResult(idCall,7);
             var lastcalls = calls.OrderByDescending(x => x.finish).ToList();
-            var getDialogs = await client.GetRecordingTranscripts("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow");
-            var audioLink = await client.GetRecordAudio("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow", "C:\\ffmpeg\\");
+            var getDialogs = await client.GetRecordingTranscripts("*");
+            var audioLink = await client.GetRecordAudio("*", "C:\\ffmpeg\\");
 
 
             Console.WriteLine("Hello World!");
