@@ -1,2 +1,3 @@
-# mango-office-client
-Net Core client library for accessing the MangoApps api
+# Mango .NET Core Library
+
+This is a C# .NET library that allows interaction with Mango OFFICE API
