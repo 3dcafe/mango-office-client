@@ -4,6 +4,14 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>MangoOfficeClient</RootNamespace>
     <AssemblyName>MangoOfficeClient</AssemblyName>
+    <SignAssembly>false</SignAssembly>
+    <Version>1.0.1</Version>
+    <Description>Library for API Virtual PBX from MANGO OFFICE</Description>
+    <PackageId>MangoOfficeClientCore</PackageId>
+    <Copyright>https://3dcafe.ru</Copyright>
+    <AssemblyVersion>1.0.1.1</AssemblyVersion>
+    <FileVersion>1.0.1.1</FileVersion>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
