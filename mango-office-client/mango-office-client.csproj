@@ -5,7 +5,7 @@
     <RootNamespace>MangoOfficeClient</RootNamespace>
     <AssemblyName>MangoOfficeClient</AssemblyName>
     <SignAssembly>false</SignAssembly>
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Description>Library for API Virtual PBX from MANGO OFFICE</Description>
     <PackageId>MangoOfficeClientCore</PackageId>
     <Copyright>https://3dcafe.ru</Copyright>

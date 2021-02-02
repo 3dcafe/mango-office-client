@@ -1,22 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace MangoOfficeClient.Extensions
 {
     public static class StringHelper
     {
+        /// <summary>
+        /// Replace the string of special characters
+        /// </summary>
+        /// <param name="str">Text</param>
+        /// <returns></returns>
         public static string RemoveSpecialCharacters(this string str)
         {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in str)
-            {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_')
-                {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
+            return Regex.Replace(str, "[^а-яА-Яa-zA-Z0-9_. «»]+", "", RegexOptions.Compiled);
         }
     }
 }
