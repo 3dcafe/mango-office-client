@@ -5,13 +5,16 @@
     <RootNamespace>MangoOfficeClient</RootNamespace>
     <AssemblyName>MangoOfficeClient</AssemblyName>
     <SignAssembly>false</SignAssembly>
-    <Version>1.0.2</Version>
-    <Description>Library for API Virtual PBX from MANGO OFFICE</Description>
+    <Version>1.0.3</Version>
+    <Description>Library for API Virtual PBX from MANGO OFFICE (Mango Office Client Core)</Description>
     <PackageId>MangoOfficeClientCore</PackageId>
     <Copyright>https://3dcafe.ru</Copyright>
     <AssemblyVersion>1.0.1.1</AssemblyVersion>
     <FileVersion>1.0.1.1</FileVersion>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Company>3DCAFE</Company>
+    <Authors>Miller</Authors>
+    <RepositoryUrl>https://github.com/3dcafe/mango-office-client/</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

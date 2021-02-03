@@ -22,8 +22,11 @@ namespace TestClient
         /// Ключ для создания подписи
         /// </summary>
         static string vpbx_api_salt = "*";
-
-
+        /// <summary>
+        /// Base method
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
         static async System.Threading.Tasks.Task Main(string[] args)
         {
             //1. Check generate token
@@ -40,12 +43,10 @@ namespace TestClient
             var lastcalls = calls.OrderByDescending(x => x.finish).ToList();
             var getDialogs = await client.GetRecordingTranscripts("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow");
             var audioLink = await client.GetRecordAudio("MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow", "C:\\ffmpeg\\");
-            
 
             Console.WriteLine("Hello World!");
             Console.ReadLine();
         }
-        //"MToxMDAxNTE0OToxMDUzMTI4NTA0Mjow]"
         //https://tula.mango-office.ru/support/integratsiya-api/spisok_integratsiy/emulyator_api_virtualnoy_ats/?PATH=%2Fintegratsiya-api%2Fspisok_integratsiy%2Femulyator_api_virtualnoy_ats#/
         //https://www.mango-office.ru/upload/api/MangoOffice_VPBX_API_v1.9.pdf
     }
